@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Koin — A modern, premium personal expense tracker. Track income, expenses, and analyze your spending with beautiful charts and insights.">
+  <title>Koin — Expense Tracker</title>
+
+  <!-- Favicons & Web App Manifest -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <meta name="theme-color" content="#3978F6">
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/reset.css?v=glass2">
+  <link rel="stylesheet" href="css/variables.css?v=glass2">
+  <link rel="stylesheet" href="css/layout.css?v=glass2">
+  <link rel="stylesheet" href="css/components.css?v=glass2">
+  <link rel="stylesheet" href="css/responsive.css?v=glass2">
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- ════════════════════════════════════════════════════════
+         SIDEBAR NAVIGATION (Desktop)
+         (Koin PRO Smart Finance logo and text removed as requested)
+         ════════════════════════════════════════════════════════ -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main Navigation">
+      <div class="sidebar-top">
+        <div class="sidebar-brand">
+          <img src="assets/dashboard_logo.png" alt="Koin" class="sidebar-brand-img" />
+        </div>
+      </div>
+
+      <div class="sidebar-section-label">MENU</div>
+
+      <nav class="sidebar-nav" role="navigation" aria-label="Main navigation">
+        <a href="#dashboard" class="nav-link active" data-page="dashboard" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </span>
+          <span>Dashboard</span>
+        </a>
+        <a href="#transactions" class="nav-link" data-page="transactions">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          </span>
+          <span>Transactions</span>
+        </a>
+        <a href="#analytics" class="nav-link" data-page="analytics">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </span>
+          <span>Analytics</span>
+        </a>
+        <button type="button" class="nav-link nav-link--btn nav-link--ai" id="btn-nav-ai-overview" aria-label="AI Overview">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+              <path d="M5 3v4"/>
+              <path d="M19 17v4"/>
+              <path d="M3 5h4"/>
+              <path d="M17 19h4"/>
+            </svg>
+          </span>
+          <span>AI Overview</span>
+          <span class="nav-ai-pill">AI</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <!-- + Add Transaction -->
+        <button type="button" class="btn btn-primary sidebar-btn-add" id="btn-sidebar-add-transaction" aria-label="Add transaction">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Add Transaction</span>
+        </button>
+
+        <div class="sidebar-profile" role="button" tabindex="0" data-page="profile" aria-label="Open profile">
+          <div class="sidebar-avatar-wrapper">
+            <div class="sidebar-avatar" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+            <span class="sidebar-status-dot" aria-hidden="true"></span>
+          </div>
+          <div class="sidebar-profile-info">
+            <span class="sidebar-profile-name" id="sidebar-user-name">Personal Account</span>
+            <span class="sidebar-profile-label" id="sidebar-user-role">Verified</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Top Header -->
+    <header class="mobile-header" id="mobile-header">
+      <div class="mobile-header-brand">
+        <img src="assets/dashboard_logo.png" alt="Koin" class="mobile-header-logo" />
+      </div>
+      <div class="dash-period-badge mobile-period-badge" role="group" aria-label="Month selector">
+        <button type="button" class="btn-period-arrow" id="btn-mobile-prev-month" aria-label="Previous month">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="period-dot" aria-hidden="true"></span>
+        <span id="mobile-period-label" style="font-weight: 700; color: var(--text-primary); font-size: 13px;"></span>
+        <button type="button" class="btn-period-arrow" id="btn-mobile-next-month" aria-label="Next month">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ════════════════════════════════════════════════════════
+         MAIN CONTENT
+         ════════════════════════════════════════════════════════ -->
+    <main class="main-content" id="main-content">
+      <div class="main-inner">
+
+        <!-- ── Dashboard Page ─────────────────────────────── -->
+        <section id="page-dashboard" class="page active" role="region" aria-label="Dashboard">
+          <!-- Rendered by js/ui/dashboard.js -->
+        </section>
+
+        <!-- ── Transactions Page ──────────────────────────── -->
+        <section id="page-transactions" class="page" role="region" aria-label="Transactions" hidden>
+          <!-- Rendered by js/ui/transaction-list.js -->
+        </section>
+
+        <!-- ── Analytics Page ─────────────────────────────── -->
+        <section id="page-analytics" class="page" role="region" aria-label="Analytics" hidden>
+          <!-- Rendered by js/ui/analytics-page.js -->
+        </section>
+
+        <!-- ── Profile Page ───────────────────────────────── -->
+        <section id="page-profile" class="page" role="region" aria-label="Profile" hidden>
+          <!-- Rendered by js/ui/profile-page.js -->
+        </section>
+
+      </div>
+    </main>
+
+    <!-- ════════════════════════════════════════════════════════
+         BOTTOM NAVIGATION (Mobile Floating Capsule Dock)
+         ════════════════════════════════════════════════════════ -->
+    <nav class="bottom-nav" id="bottom-nav" aria-label="Mobile navigation">
+      <div class="bottom-nav-inner">
+        <button class="bottom-nav-link active" data-page="dashboard" aria-label="Dashboard">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3.2L3.5 10.5a1 1 0 0 0 .65 1.75H5v7.25a1.5 1.5 0 0 0 1.5 1.5h3.5a1 1 0 0 0 1-1V15.5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4.5a1 1 0 0 0 1 1h3.5a1.5 1.5 0 0 0 1.5-1.5V12.25h.85a1 1 0 0 0 .65-1.75L12 3.2z"/>
+            </svg>
+          </span>
+          <span class="bottom-nav-text">Home</span>
+        </button>
+
+        <button class="bottom-nav-link" data-page="transactions" aria-label="Transactions">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4.5" y="3.5" width="15" height="17" rx="3.5"/>
+              <line x1="8.5" y1="9" x2="15.5" y2="9"/>
+              <line x1="8.5" y1="13.5" x2="15.5" y2="13.5"/>
+            </svg>
+          </span>
+          <span class="bottom-nav-text">Records</span>
+        </button>
+
+        <button class="bottom-nav-add" id="btn-add-mobile" aria-label="Add transaction">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+            <line x1="12" y1="5.5" x2="12" y2="18.5"/>
+            <line x1="5.5" y1="12" x2="18.5" y2="12"/>
+          </svg>
+        </button>
+
+        <button class="bottom-nav-link" data-page="analytics" aria-label="Analytics">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <rect x="5" y="12" width="3" height="8" rx="1.5"/>
+              <rect x="10.5" y="5" width="3" height="15" rx="1.5"/>
+              <rect x="16" y="9" width="3" height="11" rx="1.5"/>
+            </svg>
+          </span>
+          <span class="bottom-nav-text">Insights</span>
+        </button>
+
+        <button class="bottom-nav-link" id="btn-bottom-profile" data-page="profile" aria-label="Profile">
+          <span class="nav-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+          </span>
+          <span class="bottom-nav-text">Profile</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       MODAL (Transaction Form)
+       ════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+    <div class="modal" id="transaction-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <!-- Rendered by js/ui/transaction-form.js -->
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       AI OVERVIEW MODAL
+       ════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="ai-overview-overlay" aria-hidden="true">
+    <div class="modal modal--ai" id="ai-overview-modal" role="dialog" aria-modal="true" aria-labelledby="ai-overview-title">
+      <!-- Rendered dynamically by js/ui/ai-overview.js -->
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       CONFIRM DIALOG
+       ════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" id="confirm-overlay" aria-hidden="true">
+    <div class="modal" id="confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title">
+      <!-- Rendered dynamically -->
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       TOAST CONTAINER
+       ════════════════════════════════════════════════════════ -->
+  <div class="toast-container" id="toast-container" aria-live="polite" aria-relevant="additions"></div>
+
+  <!-- ════════════════════════════════════════════════════════
+       ONBOARDING CONTAINER
+       ════════════════════════════════════════════════════════ -->
+  <div id="onboarding-root"></div>
+
+  <!-- ════════════════════════════════════════════════════════
+       APP ENTRY
+       ════════════════════════════════════════════════════════ -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

@@ -683,6 +683,16 @@ button.nav-link,
   font-size: var(--font-size-sm);
   color: #FFFFFF;
   box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+  overflow: hidden;
+  position: relative;
+}
+
+.sidebar-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-full);
+  display: block;
 }
 
 .sidebar-status-dot {

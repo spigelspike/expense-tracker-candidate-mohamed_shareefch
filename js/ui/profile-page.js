@@ -11,7 +11,7 @@ import {
 } from '../modules/storage.js';
 import { getAllTransactions } from '../modules/transactions.js';
 import { getMonthlySummary } from '../modules/analytics.js';
-import { formatCurrency, getCurrentMonth, getIcon } from '../utils.js';
+import { formatCurrency, getCurrentMonth, getIcon, compressImage } from '../utils.js';
 import { showSuccess, showError } from './notifications.js';
 
 let isEditing = false;
@@ -28,6 +28,39 @@ export function updateAppUserHeader(profile) {
   const sidebarRole = document.getElementById('sidebar-user-role');
   if (sidebarName) sidebarName.textContent = p.name || 'Personal Account';
   if (sidebarRole) sidebarRole.textContent = p.occupation || 'Verified';
+
+  // Desktop sidebar avatar
+  const sidebarAvatar = document.querySelector('.sidebar-avatar');
+  if (sidebarAvatar) {
+    if (p.avatar) {
+      sidebarAvatar.innerHTML = `<img src="${p.avatar}" alt="${escapeHTML(p.name || 'User')}" class="sidebar-avatar-img" />`;
+    } else {
+      sidebarAvatar.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      `;
+    }
+  }
+
+  // Mobile bottom dock profile button
+  const bottomProfileBtn = document.getElementById('btn-bottom-profile');
+  if (bottomProfileBtn) {
+    const bottomIcon = bottomProfileBtn.querySelector('.nav-icon');
+    if (bottomIcon) {
+      if (p.avatar) {
+        bottomIcon.innerHTML = `<img src="${p.avatar}" alt="${escapeHTML(p.name || 'User')}" style="width: 22px; height: 22px; border-radius: 50%; object-fit: cover;" />`;
+      } else {
+        bottomIcon.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+        `;
+      }
+    }
+  }
 }
 
 /**
@@ -63,13 +96,30 @@ export function renderProfilePage() {
         <div class="card profile-hero-card">
           <div class="profile-hero-top">
             <div class="profile-hero-avatar-wrap">
-              <div class="profile-hero-avatar" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                  <circle cx="12" cy="7" r="4"/>
-                </svg>
+              <div class="profile-hero-avatar" id="btn-change-avatar" role="button" tabindex="0" title="Click to upload profile photo">
+                ${profile.avatar ? `
+                  <img src="${profile.avatar}" alt="${escapeHTML(profile.name || 'User')}" class="profile-hero-avatar-img" />
+                ` : `
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                `}
+                <div class="profile-avatar-upload-overlay" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                    <circle cx="12" cy="13" r="4"/>
+                  </svg>
+                  <span class="profile-avatar-overlay-text">Change</span>
+                </div>
               </div>
-              <span class="profile-hero-status-dot" title="Active Account"></span>
+              <label for="profile-avatar-file-input" class="profile-avatar-upload-badge" title="Upload new photo">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+              </label>
+              <input type="file" id="profile-avatar-file-input" accept="image/*" style="display: none;" />
             </div>
 
             <div class="profile-hero-meta">
@@ -107,6 +157,38 @@ export function renderProfilePage() {
           <div class="profile-edit-drawer ${isEditing ? 'open' : ''}" id="profile-edit-drawer">
             <form id="form-edit-profile" class="profile-edit-form" novalidate>
               <h3 class="profile-edit-title">Edit Personal Details</h3>
+
+              <!-- Profile Photo Actions in Edit Drawer -->
+              <div class="profile-photo-control-card">
+                <div class="profile-photo-preview-wrap">
+                  <div class="profile-photo-preview">
+                    ${profile.avatar ? `<img src="${profile.avatar}" alt="Preview" />` : `
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                      </svg>
+                    `}
+                  </div>
+                </div>
+                <div class="profile-photo-actions">
+                  <div class="profile-photo-actions-title">Profile Picture</div>
+                  <div class="profile-photo-actions-sub">Upload your own photo or use the default professional avatar.</div>
+                  <div class="profile-photo-btn-row">
+                    <button type="button" class="btn btn-secondary btn-xs" id="btn-upload-photo-drawer">
+                      ${getIcon('camera')}
+                      <span>Upload Photo</span>
+                    </button>
+                    <button type="button" class="btn btn-ghost btn-xs" id="btn-default-photo-drawer">
+                      <span>Use Default</span>
+                    </button>
+                    ${profile.avatar ? `
+                      <button type="button" class="btn btn-ghost btn-xs text-danger" id="btn-remove-photo-drawer">
+                        <span>Remove</span>
+                      </button>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
               <div class="profile-form-grid">
                 <div class="form-group">
                   <label for="edit-profile-name" class="form-label">Full Name</label>
@@ -260,6 +342,61 @@ function attachProfileEvents() {
     const toggleBtn = document.getElementById('btn-toggle-edit-profile');
     if (drawer) drawer.classList.remove('open');
     if (toggleBtn) toggleBtn.textContent = 'Edit Profile';
+  });
+
+  // Avatar upload triggers
+  const fileInput = document.getElementById('profile-avatar-file-input');
+  const avatarWrap = document.getElementById('btn-change-avatar');
+  const drawerUploadBtn = document.getElementById('btn-upload-photo-drawer');
+
+  const triggerUpload = () => {
+    if (fileInput) {
+      fileInput.value = '';
+      fileInput.click();
+    }
+  };
+
+  avatarWrap?.addEventListener('click', triggerUpload);
+  drawerUploadBtn?.addEventListener('click', triggerUpload);
+
+  fileInput?.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      showSuccess('Processing image...');
+      const dataUrl = await compressImage(file, 256, 256, 0.85);
+      const updated = saveUserProfile({ avatar: dataUrl });
+      updateAppUserHeader(updated);
+      showSuccess('Profile picture updated successfully!');
+      renderProfilePage();
+    } catch (err) {
+      showError(err.message || 'Failed to process image file.');
+    }
+  });
+
+  // Reset to default photo
+  document.getElementById('btn-default-photo-drawer')?.addEventListener('click', () => {
+    try {
+      const updated = saveUserProfile({ avatar: 'assets/default_avatar.jpg' });
+      updateAppUserHeader(updated);
+      showSuccess('Profile photo reset to default.');
+      renderProfilePage();
+    } catch {
+      showError('Failed to reset profile photo.');
+    }
+  });
+
+  // Remove photo
+  document.getElementById('btn-remove-photo-drawer')?.addEventListener('click', () => {
+    try {
+      const updated = saveUserProfile({ avatar: '' });
+      updateAppUserHeader(updated);
+      showSuccess('Profile photo removed.');
+      renderProfilePage();
+    } catch {
+      showError('Failed to remove profile photo.');
+    }
   });
 
   // Save profile changes

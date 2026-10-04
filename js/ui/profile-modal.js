@@ -7,6 +7,7 @@
 
 import { getAllTransactions } from '../modules/transactions.js';
 import { getMonthlySummary } from '../modules/analytics.js';
+import { getUserProfile } from '../modules/storage.js';
 import { formatCurrency, getCurrentMonth, getMonthLabel, getIcon } from '../utils.js';
 import { showSuccess } from './notifications.js';
 
@@ -52,6 +53,7 @@ export function openProfileModal() {
   const modal = document.getElementById('profile-modal');
   if (!overlay || !modal) return;
 
+  const profile = getUserProfile();
   const allTxns = getAllTransactions();
   const current = getCurrentMonth();
   const summary = getMonthlySummary(allTxns, current.year, current.month);
@@ -60,20 +62,24 @@ export function openProfileModal() {
   modal.innerHTML = `
     <div class="profile-modal-header">
       <div class="profile-header-user">
-        <div class="profile-modal-avatar-wrap profile-modal-avatar-wrap--icon">
-          <div class="profile-modal-icon-badge" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
+        <div class="profile-modal-avatar-wrap">
+          ${profile.avatar ? `
+            <img src="${profile.avatar}" alt="${profile.name || 'User'}" class="profile-modal-avatar-img" />
+          ` : `
+            <div class="profile-modal-icon-badge" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="28" height="28">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+            </div>
+          `}
           <span class="profile-modal-badge" title="Active Account"></span>
         </div>
         <div class="profile-header-info">
-          <h2 class="profile-modal-title" id="profile-modal-title">Personal Account</h2>
+          <h2 class="profile-modal-title" id="profile-modal-title">${profile.name || 'Personal Account'}</h2>
           <span class="profile-modal-tag">
             ${getIcon('check')}
-            <span>Verified Personal Plan</span>
+            <span>${profile.occupation || 'Verified Personal Plan'}</span>
           </span>
         </div>
       </div>

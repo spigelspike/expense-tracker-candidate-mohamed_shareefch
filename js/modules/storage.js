@@ -323,7 +323,7 @@ const DEFAULT_PROFILE = {
   monthlyGoal: 15000,
   currency: 'INR',
   joinedDate: '2026-10-01',
-  avatar: 'assets/default_avatar.jpg',
+  avatar: null,
 };
 
 /**

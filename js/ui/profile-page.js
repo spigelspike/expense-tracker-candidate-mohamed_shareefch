@@ -172,18 +172,15 @@ export function renderProfilePage() {
                 </div>
                 <div class="profile-photo-actions">
                   <div class="profile-photo-actions-title">Profile Picture</div>
-                  <div class="profile-photo-actions-sub">Upload your own photo or use the default professional avatar.</div>
+                  <div class="profile-photo-actions-sub">Upload a custom photo from your device, or remove it anytime.</div>
                   <div class="profile-photo-btn-row">
                     <button type="button" class="btn btn-secondary btn-xs" id="btn-upload-photo-drawer">
                       ${getIcon('camera')}
                       <span>Upload Photo</span>
                     </button>
-                    <button type="button" class="btn btn-ghost btn-xs" id="btn-default-photo-drawer">
-                      <span>Use Default</span>
-                    </button>
                     ${profile.avatar ? `
                       <button type="button" class="btn btn-ghost btn-xs text-danger" id="btn-remove-photo-drawer">
-                        <span>Remove</span>
+                        <span>Remove Photo</span>
                       </button>
                     ` : ''}
                   </div>
@@ -375,17 +372,7 @@ function attachProfileEvents() {
     }
   });
 
-  // Reset to default photo
-  document.getElementById('btn-default-photo-drawer')?.addEventListener('click', () => {
-    try {
-      const updated = saveUserProfile({ avatar: 'assets/default_avatar.jpg' });
-      updateAppUserHeader(updated);
-      showSuccess('Profile photo reset to default.');
-      renderProfilePage();
-    } catch {
-      showError('Failed to reset profile photo.');
-    }
-  });
+
 
   // Remove photo
   document.getElementById('btn-remove-photo-drawer')?.addEventListener('click', () => {

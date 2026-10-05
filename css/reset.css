@@ -33,11 +33,28 @@ body {
   line-height: var(--line-height-normal);
   color: var(--text-primary);
   background-color: var(--bg-main);
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hardware-accelerated fixed background canvas (eliminates scroll repaints on mobile) */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--bg-main);
   background-image: var(--bg-mesh);
   background-repeat: no-repeat;
-  background-attachment: fixed;
   background-size: cover;
-  min-height: 100vh;
+  transform: translate3d(0, 0, 0);
+  -webkit-transform: translate3d(0, 0, 0);
+  will-change: transform;
 }
 
 /* Remove list styles on ul/ol with role="list" */
@@ -80,6 +97,18 @@ select {
 
 button {
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Eliminate 300ms tap delay on touch devices */
+a,
+input,
+select,
+textarea,
+[role="button"],
+[role="tab"] {
+  touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }
 

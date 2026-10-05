@@ -89,11 +89,12 @@ function updateDOMActiveState(pageId) {
     }
   });
 
-  // 4. Scroll main content area back to top smoothly
+  // 4. Scroll main content area and window back to top
   const mainContent = document.getElementById('main-content');
   if (mainContent) {
     mainContent.scrollTop = 0;
   }
+  window.scrollTo(0, 0);
 }
 
 /**

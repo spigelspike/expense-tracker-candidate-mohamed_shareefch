@@ -411,20 +411,22 @@ export function renderDashboard() {
     </section>
   `;
 
-  // Render Desktop Charts
-  const barChartContainer = document.getElementById('dashboard-bar-chart-container');
-  if (barChartContainer) {
-    renderBarChart(barChartContainer, trends, {
-      ariaLabel: `Monthly income versus expense chart leading up to ${periodLabelText}`,
-    });
-  }
+  // Render Desktop Charts only when viewport > 768px to save CPU/DOM overhead on mobile
+  if (window.innerWidth > 768) {
+    const barChartContainer = document.getElementById('dashboard-bar-chart-container');
+    if (barChartContainer) {
+      renderBarChart(barChartContainer, trends, {
+        ariaLabel: `Monthly income versus expense chart leading up to ${periodLabelText}`,
+      });
+    }
 
-  const donutChartContainer = document.getElementById('dashboard-donut-chart-container');
-  if (donutChartContainer) {
-    renderDonutChart(donutChartContainer, categoryBreakdown, {
-      centerLabel: 'Expenses',
-      ariaLabel: `Expense category breakdown for ${periodLabelText}`,
-    });
+    const donutChartContainer = document.getElementById('dashboard-donut-chart-container');
+    if (donutChartContainer) {
+      renderDonutChart(donutChartContainer, categoryBreakdown, {
+        centerLabel: 'Expenses',
+        ariaLabel: `Expense category breakdown for ${periodLabelText}`,
+      });
+    }
   }
 
   // Render Mobile Segregated Chart Viewport

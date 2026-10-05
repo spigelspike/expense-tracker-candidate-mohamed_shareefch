@@ -10,7 +10,7 @@ import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, getCategoryMeta } from '../data/
 import { openAddForm, openEditForm } from './transaction-form.js';
 import { showSuccess, showError } from './notifications.js';
 import { navigateTo } from './navigation.js';
-import { formatCurrency, formatDate, formatDateShort, debounce, getIcon } from '../utils.js';
+import { formatCurrency, formatDate, formatDateShort, debounce, getIcon, escapeHTML } from '../utils.js';
 
 let activeFilters = clearFilters();
 let pendingDeleteId = null;
@@ -67,7 +67,7 @@ export function openDeleteConfirmation(id, desc, onDeleted) {
       </div>
       <h3 class="confirm-dialog-title" id="confirm-title">Delete Transaction?</h3>
       <p class="confirm-dialog-text">
-        Are you sure you want to delete "<strong>${desc}</strong>"? This action cannot be undone.
+        Are you sure you want to delete "<strong>${escapeHTML(desc)}</strong>"? This action cannot be undone.
       </p>
       <div class="confirm-dialog-actions">
         <button type="button" class="btn btn-secondary" id="btn-cancel-delete">Cancel</button>

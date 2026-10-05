@@ -61,38 +61,6 @@ function handlePageChange(pageId) {
 }
 
 /**
- * Setup mobile sidebar drawer toggle and overlay behavior.
- */
-function setupMobileSidebar() {
-  const moreBtn = document.getElementById('btn-more-mobile');
-  const sidebar = document.getElementById('sidebar');
-
-  if (moreBtn && sidebar) {
-    moreBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('open');
-    });
-
-    // Close sidebar when clicking outside or selecting a link on mobile
-    document.addEventListener('click', (e) => {
-      if (
-        sidebar.classList.contains('open') &&
-        !sidebar.contains(e.target) &&
-        !moreBtn.contains(e.target)
-      ) {
-        sidebar.classList.remove('open');
-      }
-    });
-
-    const sidebarLinks = sidebar.querySelectorAll('.nav-link');
-    sidebarLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-      });
-    });
-  }
-}
-
-/**
  * Top-level application bootstrap.
  */
 function init() {
@@ -129,9 +97,6 @@ function init() {
     openAddForm('expense');
   });
   document.getElementById('btn-top-add-transaction')?.addEventListener('click', () => {
-    openAddForm('expense');
-  });
-  document.getElementById('btn-add-mobile')?.addEventListener('click', () => {
     openAddForm('expense');
   });
 

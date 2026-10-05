@@ -322,7 +322,7 @@ const DEFAULT_PROFILE = {
   salary: 50000,
   monthlyGoal: 15000,
   currency: 'INR',
-  joinedDate: '2026-10-01',
+  joinedDate: new Date().toISOString().slice(0, 10),
   avatar: null,
 };
 
@@ -406,52 +406,6 @@ export function saveUserProfile(profileUpdates) {
   }
 }
 
-/**
- * Add a new profile and set it as active.
- * @param {object} profileData
- * @returns {object}
- */
-export function addNewProfile(profileData) {
-  try {
-    const newId = 'profile_' + Date.now();
-    const newProfile = {
-      ...DEFAULT_PROFILE,
-      ...profileData,
-      id: newId,
-      joinedDate: new Date().toISOString().slice(0, 10),
-    };
-    const profiles = getAllProfiles();
-    profiles.push(newProfile);
-    localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
-    localStorage.setItem(ACTIVE_PROFILE_ID_KEY, newId);
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(newProfile));
-    return newProfile;
-  } catch (err) {
-    console.error('Failed to add profile:', err);
-    throw err;
-  }
-}
-
-/**
- * Switch active profile by ID.
- * @param {string} profileId
- * @returns {object|null}
- */
-export function switchActiveProfile(profileId) {
-  try {
-    const profiles = getAllProfiles();
-    const target = profiles.find(p => p.id === profileId);
-    if (target) {
-      localStorage.setItem(ACTIVE_PROFILE_ID_KEY, profileId);
-      localStorage.setItem(PROFILE_KEY, JSON.stringify(target));
-      return target;
-    }
-    return null;
-  } catch (err) {
-    console.error('Failed to switch profile:', err);
-    return null;
-  }
-}
 
 /**
  * Check whether the user has completed first-time onboarding.
@@ -476,3 +430,5 @@ export function setOnboardingCompleted(completed = true) {
     console.error('Failed to set onboarding status:', err);
   }
 }
+
+

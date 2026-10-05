@@ -8,6 +8,7 @@
 import { isOnboardingCompleted, setOnboardingCompleted, saveUserProfile, getUserProfile } from '../modules/storage.js';
 import { updateAppUserHeader } from './profile-page.js';
 import { showSuccess, showError } from './notifications.js';
+import { escapeHTML } from '../utils.js';
 
 const ONBOARDING_SLIDES = [
   {
@@ -221,14 +222,4 @@ function renderOnboardingView(root) {
       }
     });
   }
-}
-
-function escapeHTML(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }

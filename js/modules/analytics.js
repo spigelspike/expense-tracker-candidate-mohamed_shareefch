@@ -29,11 +29,11 @@ function roundMoney(val) {
  * @param {Array} transactions
  * @param {number} year
  * @param {number} month - 0-indexed (0-11)
- * @returns {{ income: number, expenses: number, balance: number, savingsRate: number, transactionCount: number }}
+ * @returns {{ income: number, expenses: number, balance: number, savingsRate: number, transactionCount: number, incomeCount: number, expenseCount: number }}
  */
 export function getMonthlySummary(transactions, year, month) {
   if (!Array.isArray(transactions) || transactions.length === 0) {
-    return { income: 0, expenses: 0, balance: 0, savingsRate: 0, transactionCount: 0 };
+    return { income: 0, expenses: 0, balance: 0, savingsRate: 0, transactionCount: 0, incomeCount: 0, expenseCount: 0 };
   }
 
   const income = calculateMonthlyIncome(transactions, year, month);
@@ -42,14 +42,18 @@ export function getMonthlySummary(transactions, year, month) {
   const savingsRate = calculateSavingsRate(income, expenses);
 
   const prefix = `${year}-${String(month + 1).padStart(2, '0')}`;
-  const count = transactions.filter(t => t && t.date && t.date.startsWith(prefix)).length;
+  const monthTxns = transactions.filter(t => t && t.date && t.date.startsWith(prefix));
+  const incomeCount = monthTxns.filter(t => t.type === 'income').length;
+  const expenseCount = monthTxns.filter(t => t.type === 'expense').length;
 
   return {
     income,
     expenses,
     balance,
     savingsRate,
-    transactionCount: count,
+    transactionCount: monthTxns.length,
+    incomeCount,
+    expenseCount,
   };
 }
 

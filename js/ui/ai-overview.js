@@ -42,30 +42,28 @@ function resolvePeriod(periodId, allTransactions) {
 
   switch (periodId) {
     case 'this_month': {
-      const txns = allTransactions.filter(t => {
-        const d = new Date(t.date);
-        return d.getFullYear() === curYear && d.getMonth() === curMonth;
-      });
+      const prefix = `${curYear}-${String(curMonth + 1).padStart(2, '0')}`;
+      const txns = allTransactions.filter(t => t && t.date && t.date.startsWith(prefix));
       return { transactions: txns, label: `${MONTH_NAMES_LONG[curMonth]} ${curYear}`, year: curYear, month: curMonth, multiMonth: false };
     }
     case 'last_month': {
-      const d = new Date(curYear, curMonth - 1, 1);
-      const y = d.getFullYear();
-      const m = d.getMonth();
-      const txns = allTransactions.filter(t => {
-        const td = new Date(t.date);
-        return td.getFullYear() === y && td.getMonth() === m;
-      });
+      const prevDate = new Date(curYear, curMonth - 1, 1);
+      const y = prevDate.getFullYear();
+      const m = prevDate.getMonth();
+      const prefix = `${y}-${String(m + 1).padStart(2, '0')}`;
+      const txns = allTransactions.filter(t => t && t.date && t.date.startsWith(prefix));
       return { transactions: txns, label: `${MONTH_NAMES_LONG[m]} ${y}`, year: y, month: m, multiMonth: false };
     }
     case 'last_3': {
       const cutoff = new Date(curYear, curMonth - 2, 1);
-      const txns = allTransactions.filter(t => new Date(t.date) >= cutoff);
+      const cutoffStr = `${cutoff.getFullYear()}-${String(cutoff.getMonth() + 1).padStart(2, '0')}-01`;
+      const txns = allTransactions.filter(t => t && t.date && t.date >= cutoffStr);
       return { transactions: txns, label: 'Last 3 Months', year: null, month: null, multiMonth: true, numMonths: 3 };
     }
     case 'last_6': {
       const cutoff = new Date(curYear, curMonth - 5, 1);
-      const txns = allTransactions.filter(t => new Date(t.date) >= cutoff);
+      const cutoffStr = `${cutoff.getFullYear()}-${String(cutoff.getMonth() + 1).padStart(2, '0')}-01`;
+      const txns = allTransactions.filter(t => t && t.date && t.date >= cutoffStr);
       return { transactions: txns, label: 'Last 6 Months', year: null, month: null, multiMonth: true, numMonths: 6 };
     }
     case 'all_time':
@@ -120,7 +118,7 @@ ${breakdown.length > 0
 
     trendsSection = `## Monthly Trends (Last 6 Months)
 ${trends.length > 0
-  ? trends.map(t => `  • ${MONTH_NAMES_SHORT[t.month - 1]} ${t.year}: Income ${formatCurrency(t.income)}, Expenses ${formatCurrency(t.expenses)}, Balance ${formatCurrency(t.balance)}`).join('\n')
+  ? trends.map(t => `  • ${t.fullLabel}: Income ${formatCurrency(t.income)}, Expenses ${formatCurrency(t.expenses)}, Balance ${formatCurrency(t.balance)}`).join('\n')
   : '  Insufficient trend data.'}`;
 
   } else {
@@ -146,7 +144,7 @@ ${trends.length > 0
     // Monthly trends over the filtered window
     const trends = getMonthlyTrends(allTransactions, numMonths || 12);
     const trendLines = trends.length > 0
-      ? trends.map(t => `  • ${MONTH_NAMES_SHORT[t.month - 1]} ${t.year}: Income ${formatCurrency(t.income)}, Expenses ${formatCurrency(t.expenses)}, Balance ${formatCurrency(t.balance)}`).join('\n')
+      ? trends.map(t => `  • ${t.fullLabel}: Income ${formatCurrency(t.income)}, Expenses ${formatCurrency(t.expenses)}, Balance ${formatCurrency(t.balance)}`).join('\n')
       : '  Insufficient trend data.';
 
     summarySection = `## ${label} Summary
@@ -401,9 +399,6 @@ function escapeForHTML(text) {
 export function initAiOverview() {
   // Desktop sidebar navigation button
   document.getElementById('btn-nav-ai-overview')?.addEventListener('click', () => {
-    openAiOverviewModal();
-  });
-  document.getElementById('btn-sidebar-ai-overview')?.addEventListener('click', () => {
     openAiOverviewModal();
   });
 

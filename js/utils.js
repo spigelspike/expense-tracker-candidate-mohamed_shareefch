@@ -286,3 +286,18 @@ export function compressImage(file, maxWidth = 256, maxHeight = 256, quality = 0
     reader.readAsDataURL(file);
   });
 }
+
+/**
+ * Escape HTML special characters to prevent XSS in dynamic string templates.
+ * @param {string} str
+ * @returns {string}
+ */
+export function escapeHTML(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}

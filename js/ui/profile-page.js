@@ -11,7 +11,7 @@ import {
 } from '../modules/storage.js';
 import { getAllTransactions } from '../modules/transactions.js';
 import { getMonthlySummary } from '../modules/analytics.js';
-import { formatCurrency, getCurrentMonth, getIcon, compressImage } from '../utils.js';
+import { formatCurrency, getCurrentMonth, getIcon, compressImage, escapeHTML } from '../utils.js';
 import { showSuccess, showError } from './notifications.js';
 
 let isEditing = false;
@@ -320,7 +320,6 @@ export function renderProfilePage() {
 function attachProfileEvents() {
   // Replay tour (card button still available in data management section)
   document.getElementById('btn-profile-walkthrough')?.addEventListener('click', () => {
-    // Re-run onboarding — import lazily to avoid circular if needed
     import('./onboarding.js').then(m => m.showOnboarding(true));
   });
 
@@ -493,117 +492,4 @@ function attachProfileEvents() {
       renderProfilePage();
     });
   });
-}
-
-/**
- * Open the Add New Profile modal.
- */
-function openAddProfileModal() {
-  const overlay = document.getElementById('add-profile-overlay');
-  const modal = document.getElementById('add-profile-modal');
-  if (!overlay || !modal) return;
-
-  modal.innerHTML = `
-    <div class="modal-header">
-      <h2 class="modal-title" id="add-profile-title">Add New Profile</h2>
-      <button type="button" class="modal-close" id="btn-close-add-profile-modal" aria-label="Close dialog">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
-    </div>
-    <form id="form-add-new-profile" class="modal-body" style="padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-4);" novalidate>
-      <div class="form-group">
-        <label for="new-profile-name" class="form-label">Full Name / Profile Name *</label>
-        <input type="text" id="new-profile-name" class="form-input" placeholder="e.g. Alex Freelance, Work Account" required />
-      </div>
-      <div class="form-group">
-        <label for="new-profile-occupation" class="form-label">Occupation / Purpose *</label>
-        <input type="text" id="new-profile-occupation" class="form-input" placeholder="e.g. Freelance Designer, Consultant" required />
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3);">
-        <div class="form-group">
-          <label for="new-profile-age" class="form-label">Age</label>
-          <input type="number" id="new-profile-age" class="form-input" placeholder="e.g. 26" min="1" max="120" value="25" />
-        </div>
-        <div class="form-group">
-          <label for="new-profile-salary" class="form-label">Monthly Salary (₹) *</label>
-          <input type="number" id="new-profile-salary" class="form-input" placeholder="e.g. 60000" min="0" step="1000" value="50000" required />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="new-profile-goal" class="form-label">Monthly Savings Target (₹)</label>
-        <input type="number" id="new-profile-goal" class="form-input" placeholder="e.g. 15000" min="0" step="500" value="15000" />
-      </div>
-      <div style="display: flex; justify-content: flex-end; gap: var(--space-3); margin-top: var(--space-4);">
-        <button type="button" class="btn btn-secondary" id="btn-cancel-add-profile-modal">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="btn-submit-add-profile-modal">Create Profile</button>
-      </div>
-    </form>
-  `;
-
-  overlay.classList.add('visible', 'active');
-  overlay.removeAttribute('aria-hidden');
-
-  const closeModal = () => {
-    overlay.classList.remove('visible', 'active');
-    overlay.setAttribute('aria-hidden', 'true');
-  };
-
-  document.getElementById('btn-close-add-profile-modal')?.addEventListener('click', closeModal);
-  document.getElementById('btn-cancel-add-profile-modal')?.addEventListener('click', closeModal);
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) closeModal();
-  }, { once: true });
-
-  const form = document.getElementById('form-add-new-profile');
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const nameInput = document.getElementById('new-profile-name');
-    const occInput = document.getElementById('new-profile-occupation');
-    const ageInput = document.getElementById('new-profile-age');
-    const salaryInput = document.getElementById('new-profile-salary');
-    const goalInput = document.getElementById('new-profile-goal');
-
-    const name = nameInput?.value.trim();
-    const occupation = occInput?.value.trim();
-    const age = parseInt(ageInput?.value, 10) || 25;
-    const salary = parseFloat(salaryInput?.value) || 50000;
-    const monthlyGoal = parseFloat(goalInput?.value) || 15000;
-
-    if (!name) {
-      showError('Please enter a profile name.');
-      nameInput?.focus();
-      return;
-    }
-    if (!occupation) {
-      showError('Please enter an occupation or purpose.');
-      occInput?.focus();
-      return;
-    }
-
-    try {
-      const created = addNewProfile({ name, occupation, age, salary, monthlyGoal });
-      closeModal();
-      updateAppUserHeader(created);
-      showSuccess(`Profile "${created.name}" created successfully!`);
-      renderProfilePage();
-    } catch {
-      showError('Failed to create new profile.');
-    }
-  });
-
-  setTimeout(() => {
-    document.getElementById('new-profile-name')?.focus();
-  }, 100);
-}
-
-function escapeHTML(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }

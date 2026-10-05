@@ -25,7 +25,7 @@ import { openAddForm, openEditForm } from './transaction-form.js';
 import { navigateTo } from './navigation.js';
 import { filterByCategory, openDeleteConfirmation } from './transaction-list.js';
 import { showSuccess, showError } from './notifications.js';
-import { formatCurrency, formatDateShort, getMonthLabel, getCurrentMonth, getIcon } from '../utils.js';
+import { formatCurrency, formatDateShort, getMonthLabel, getCurrentMonth, getIcon, escapeHTML } from '../utils.js';
 import { getCategoryMeta } from '../data/categories.js';
 
 let isBalanceHidden = false;
@@ -352,7 +352,7 @@ export function renderDashboard() {
                   ${getIcon(ins.icon || 'lightbulb')}
                 </div>
                 <div class="insight-text" style="font-size: var(--font-size-xs);">
-                  <strong>${escapeHtml(ins.title)}:</strong> ${escapeHtml(ins.description)}
+                  <strong>${escapeHTML(ins.title)}:</strong> ${escapeHTML(ins.description)}
                 </div>
               </div>
             `).join('') : `
@@ -450,7 +450,6 @@ export function renderDashboard() {
   }
 
   document.getElementById('btn-toggle-balance')?.addEventListener('click', toggleBalanceVisibility);
-  document.getElementById('btn-add-transaction-dash')?.addEventListener('click', () => openAddForm('expense'));
 
   // 3 Hero Buttons Handlers
   document.getElementById('btn-hero-add-income')?.addEventListener('click', () => openAddForm('income'));
@@ -571,7 +570,7 @@ function renderRecentTransactionsList(transactions) {
           ${getIcon(meta.icon)}
         </div>
         <div class="latest-tx-details">
-          <span class="latest-tx-title" title="${escapeHtml(t.description)}">${escapeHtml(t.description)}</span>
+          <span class="latest-tx-title" title="${escapeHTML(t.description)}">${escapeHTML(t.description)}</span>
           <div class="latest-tx-meta">
             <span class="badge" style="background: ${meta.soft}; color: ${meta.color}; font-size: 11px; padding: 1px 7px;">
               ${t.category}
@@ -587,10 +586,10 @@ function renderRecentTransactionsList(transactions) {
           ${isIncome ? '+' : '-'}${formatCurrency(t.amount)}
         </span>
         <div class="latest-tx-actions">
-          <button type="button" class="latest-action-btn btn-edit-dash" data-id="${t.id}" aria-label="Edit ${escapeHtml(t.description)}">
+          <button type="button" class="latest-action-btn btn-edit-dash" data-id="${t.id}" aria-label="Edit ${escapeHTML(t.description)}">
             ${getIcon('edit')}
           </button>
-          <button type="button" class="latest-action-btn latest-action-btn--delete btn-delete-dash" data-id="${t.id}" data-desc="${escapeHtml(t.description)}" aria-label="Delete ${escapeHtml(t.description)}">
+          <button type="button" class="latest-action-btn latest-action-btn--delete btn-delete-dash" data-id="${t.id}" data-desc="${escapeHTML(t.description)}" aria-label="Delete ${escapeHTML(t.description)}">
             ${getIcon('trash')}
           </button>
         </div>
@@ -624,19 +623,4 @@ function renderRecentTransactionsList(transactions) {
       });
     });
   });
-}
-
-/**
- * Escape HTML to prevent injection.
- * @param {string} str
- * @returns {string}
- */
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }
